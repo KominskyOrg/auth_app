@@ -1,8 +1,6 @@
 import axios from "axios";
-import * as bcrypt from "bcryptjs";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://jkom.com/api";
-// const salt = bcrypt.genSaltSync(10)
+const API_URL = "http://jkom.com/api";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -11,27 +9,40 @@ const api = axios.create({
   },
 });
 
-const encryptPassword = (password: string) => {
-  const hashedPassword = bcrypt.hashSync(
-    password,
-    "$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36Z5l5l5l5l5l5l5l5l5l"
-  );
-  return hashedPassword;
+// Function to set the Authorization header
+export const setAuthToken = (token: string | null) => {
+  if (token) {
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common["Authorization"];
+  }
 };
 
-export const login = (email: string, password: string) => {
-  const encryptedPassword = encryptPassword(password);
-  return api.post("/auth/login", { email, password: encryptedPassword });
-};
-
-export const register = (email: string, password: string) => {
-  const salt = bcrypt.genSaltSync(10);
-  const encryptedPassword = encryptPassword(password);
+export const register = async (
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string,
+  username: string
+) => {
   return api.post("/auth/register", {
     email,
-    password: encryptedPassword,
-    salt,
+    password,
+    first_name: firstName,
+    last_name: lastName,
+    username,
   });
+};
+
+export const login = async (username: string, password: string) => {
+  const response = await api.post("/auth/login", {
+    username,
+    password,
+  });
+  const { token } = response.data;
+  localStorage.setItem("jwtToken", token);
+  setAuthToken(token);
+  return response;
 };
 
 export default api;

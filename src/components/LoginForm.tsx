@@ -1,51 +1,48 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { login } from "../services/api";
 
-interface LoginFormProps {
-  onLoginSuccess: () => void;
-}
-
-function LoginForm({ onLoginSuccess }: LoginFormProps) {
-  const [email, setEmail] = useState("");
+const LoginForm = () => {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await login(email, password);
-      if (response.status === 200) {
-        onLoginSuccess();
-      } else {
-        setError("Login failed");
-      }
+      await login(username, password);
+      alert("Login successful");
+      navigate("/dashboard");
     } catch (err) {
-      const error = err as Error;
-      setError(`An error occurred: ${error.message}`);
-      console.error(error);
+      setError("Login failed");
+      console.error(err);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        required
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        required
-      />
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div>
+        <label>Username:</label>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </div>
+      <div>
+        <label>Password:</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
       <button type="submit">Login</button>
-      {error && <p>{error}</p>}
     </form>
   );
-}
+};
 
 export default LoginForm;
