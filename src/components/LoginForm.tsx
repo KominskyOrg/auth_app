@@ -1,30 +1,30 @@
-import { useState } from 'react'
-import { login } from '../services/api'
+import { useState } from "react";
+import { login } from "../services/api";
 
 interface LoginFormProps {
-  onLoginSuccess: () => void
+  onLoginSuccess: () => void;
 }
 
 function LoginForm({ onLoginSuccess }: LoginFormProps) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const response = await login(email, password)
+      const response = await login(email, password);
       if (response.status === 200) {
-        onLoginSuccess()
+        onLoginSuccess();
       } else {
-        setError('Login failed')
+        setError("Login failed");
       }
     } catch (err) {
-      const error = err as Error
-      setError(`An error occurred: ${error.message}`)
-      console.error(error)
+      const error = err as Error;
+      setError(`An error occurred: ${error.message}`);
+      console.error(error);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -45,7 +45,7 @@ function LoginForm({ onLoginSuccess }: LoginFormProps) {
       <button type="submit">Login</button>
       {error && <p>{error}</p>}
     </form>
-  )
+  );
 }
 
-export default LoginForm
+export default LoginForm;
