@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { register } from "../services/api";
+
 
 const RegisterForm = () => {
   const [email, setEmail] = useState("");
@@ -19,8 +21,30 @@ const RegisterForm = () => {
     return re.test(name);
   };
 
+  const validatePassword = (password: string): boolean => {
+    const minLength = 8;
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+  
+    if (password.length < minLength) {
+      return false;
+    }
+  
+    if (!specialCharRegex.test(password)) {
+      return false;
+    }
+  
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
+    const navigate = useNavigate();
+    
     e.preventDefault();
+
+    if (!validatePassword(password)) {
+      setError('Password must be at least 8 characters long and contain at least one special character.');
+      return;
+    }
 
     if (!validateEmail(email)) {
       setError("Invalid email format");
@@ -35,6 +59,7 @@ const RegisterForm = () => {
     try {
       await register(email, password, firstName, lastName, username);
       alert("Registration successful");
+      navigate("/login");
     } catch (err) {
       setError("Registration failed: " + err);
     }

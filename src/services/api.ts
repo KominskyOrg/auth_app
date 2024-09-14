@@ -45,4 +45,12 @@ export const login = async (username: string, password: string) => {
   return response;
 };
 
+export const deactivate = async (username: string, password: string) => {
+  const response = await api.post("/auth/deactivate-account", {
+    username,
+    password,
+  });
+  return response;
+};
+
 export default api;
