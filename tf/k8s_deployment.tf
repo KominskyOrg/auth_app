@@ -37,6 +37,10 @@ resource "kubernetes_deployment" "auth_app" {
             value = var.env == "dev" ? "development" : var.env == "prod" ? "production" : var.env
           }
         }
+
+        node_selector = {
+          Name = "frontend"
+        }
       }
     }
   }

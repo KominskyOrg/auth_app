@@ -14,11 +14,6 @@ resource "kubernetes_service" "auth_app_service" {
       target_port = 3000
     }
 
-    type = "LoadBalancer"
+    type = "ClusterIP"
   }
-}
-
-output "auth_app_service_url" {
-  description = "The external URL of the auth_app service"
-  value       = kubernetes_service.auth_app_service.load_balancer_ingress[0].hostname
 }
