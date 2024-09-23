@@ -1,16 +1,17 @@
 resource "kubernetes_service" "auth_app_service" {
   metadata {
-    name      = "auth-app-service"
+    name      = "auth-app"
     namespace = var.env
   }
 
   spec {
     selector = {
-      app = kubernetes_deployment.auth_app.metadata[0].labels["app"]
+      app = "auth-app"
     }
 
     port {
-      port        = 80
+      name        = "http"
+      port        = 8080
       target_port = 3000
     }
 

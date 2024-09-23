@@ -4,7 +4,7 @@ TF_DIR = tf
 BACKEND_DIR = $(TF_DIR)
 
 # Default environment
-ENV ?= dev
+ENV ?= staging
 
 # Default target
 .PHONY: help

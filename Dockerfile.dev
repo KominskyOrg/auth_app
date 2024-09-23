@@ -1,28 +1,26 @@
 # Stage 1: Development
 FROM node:20-alpine AS development
 
-# Set non-root user for security
-RUN addgroup -S devgroup && adduser -S devuser -G devgroup
-USER devuser
-
+# Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Copy package.json and package-lock.json
 COPY package*.json ./
-RUN npm ci
 
-# Install development tools globally (optional)
-# RUN npm install -g nodemon
+# Install all dependencies, including devDependencies
+RUN npm install
 
-# Copy source code
+# Install concurrently globally to manage multiple processes
+RUN npm install -g concurrently
+
+# Copy the rest of the application code
 COPY . .
 
-# Define environment variables
+# Expose ports for Vite and Express
+EXPOSE 5173 3000
+
+# Set environment variables for development
 ENV NODE_ENV=development
-ENV PORT=3000
 
-# Expose port for development server
-EXPOSE 3000
-
-# Run the application in development mode
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# Start both Vite and Express servers concurrently
+CMD ["npm run dev"]

@@ -1,5 +1,0 @@
-bucket         = "kominskyorg-dev-tf-state"
-key            = "auth_app-dev.tfstate"
-region         = "us-east-1"
-dynamodb_table = "tf-state-lock-dev"
-encrypt        = true

@@ -1,41 +1,49 @@
 # Stage 1: Build
 FROM node:20-alpine AS builder
 
+# Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Copy package.json and package-lock.json
 COPY package*.json ./
-RUN npm ci
 
-# Copy source code
+# Install all dependencies, including devDependencies
+RUN npm install
+
+# Copy the rest of the application code
 COPY . .
 
-# Build the application
+# Build the frontend assets and compile TypeScript server
 RUN npm run build
 
 # Stage 2: Production
 FROM node:20-alpine AS production
 
+# Set working directory
 WORKDIR /app
 
-# Install only production dependencies
+# Copy package.json and package-lock.json
 COPY package*.json ./
-RUN npm ci --only=production
 
-# Copy built assets from the builder stage
+# Install only production dependencies
+RUN npm install --only=production
+
+# Copy built frontend assets and compiled server from the builder stage
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/dist/server.js ./server.js
 
-# Copy server code (adjust the path as necessary)
-COPY --from=builder /app/server ./server
+# Set environment variables for production
+ENV NODE_ENV=production
+ENV PORT=3000
 
-# Expose port for production server
+# Expose the application port
 EXPOSE 3000
 
 # Create a non-root user for security
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-# Switch to the non-root user
+# Change to the non-root user
 USER appuser
 
-# Command to run the production server
-CMD ["node", "server/index.js"]
+# Start the Express server
+CMD ["node", "server.js"]

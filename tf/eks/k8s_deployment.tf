@@ -26,7 +26,7 @@ resource "kubernetes_deployment" "auth_app" {
       spec {
         container {
           name  = "auth-app"
-          image = "${aws_ecr_repository.auth_app.repository_url}:${var.image_tag}"
+          image = "${var.auth_app_ecr_url}:latest"
 
           port {
             container_port = 3000
@@ -34,12 +34,12 @@ resource "kubernetes_deployment" "auth_app" {
 
           env {
             name  = "NODE_ENV"
-            value = var.env == "dev" ? "development" : var.env == "prod" ? "production" : var.env
+            value = var.env == "staging" ? "development" : var.env == "prod" ? "production" : var.env
           }
         }
 
         node_selector = {
-          Name = "frontend"
+          role = "frontend"
         }
       }
     }
