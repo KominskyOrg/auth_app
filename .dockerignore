@@ -2,6 +2,7 @@ node_modules
 dist
 .env
 Dockerfile.dev
+Dockerfile.staging
 Dockerfile.prod
 .git
 .gitignore

@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Build the frontend assets and compile TypeScript server
-RUN npm run build
+RUN npm run build:staging
 
 # Stage 2: Staging (Production)
 FROM node:20-alpine AS staging
@@ -34,6 +34,7 @@ COPY --from=builder /app/dist ./dist
 # Set environment variables for production
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV AUTH_API_URL=http://staging.jaredkominsky.com/api/auth
 
 # Expose the application port
 EXPOSE 3000
