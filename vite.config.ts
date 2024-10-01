@@ -46,7 +46,7 @@ export default ({ mode }) => {
       __HMR_HOSTNAME__: {},
       __HMR_BASE__: {},
       __HMR_DIRECT_TARGET__: {},
-      __HMR_ENABLE_OVERLAY__: {},
+      __HMR_ENABLE_OVERLAY__: {}
     },
   });
 };

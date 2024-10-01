@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const AUTH_API_URL = process.env.AUTH_API_URL;
+const AUTH_API_URL = window.__ENV__?.AUTH_API_URL || "http://auth_api:5000";
 
 const api = axios.create({
   baseURL: AUTH_API_URL,
@@ -25,7 +25,7 @@ export const register = async (
   lastName: string,
   username: string
 ) => {
-  return api.post("/auth/register", {
+  return api.post("/register", {
     email,
     password,
     first_name: firstName,
@@ -35,7 +35,7 @@ export const register = async (
 };
 
 export const login = async (username: string, password: string) => {
-  const response = await api.post("/auth/login", {
+  const response = await api.post("/login", {
     username,
     password,
   });
@@ -46,7 +46,7 @@ export const login = async (username: string, password: string) => {
 };
 
 export const deactivate = async (username: string, password: string) => {
-  const response = await api.post("/auth/deactivate-account", {
+  const response = await api.post("/deactivate-account", {
     username,
     password,
   });

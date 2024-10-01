@@ -35,7 +35,6 @@ COPY --from=builder /app/dist/server.js ./server.js
 # Set environment variables for production
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV AUTH_API_URL=http://prod.jaredkominsky.com/api/auth
 
 # Expose the application port
 EXPOSE 3000
