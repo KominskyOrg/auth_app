@@ -1,14 +1,24 @@
-FROM node:20-alpine
+# Stage 1: Development
+FROM node:20-alpine AS development
 
+# Set working directory
 WORKDIR /app
 
+# Copy package.json and package-lock.json
 COPY package*.json ./
+
+# Install all dependencies, including devDependencies
 RUN npm install
 
+# Copy the rest of the application code
 COPY . .
 
-RUN npm run build
+# Expose ports for Vite and Express
+EXPOSE 5173 3000
 
-EXPOSE 3000
+# Set environment variables for development
+ENV NODE_ENV=development
+ENV AUTH_API_URL=http://auth_api:5000/api/auth
 
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# Start both Vite and Express servers concurrently
+CMD ["npm", "run", "dev"]

@@ -4,19 +4,24 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "npm run dev:vite && npm run dev:server",
+    "dev:vite": "vite build --mode development",
+    "dev:server": "tsc -p tsconfig.server.json && node dist/server.js",
+    "build:staging": "vite build --mode staging && tsc -p tsconfig.server.json",
+    "build:production": "vite build --mode production && tsc -p tsconfig.server.json",
+    "start": "node dist/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "test": "jest",
     "preview": "vite preview",
-    "docker:build": "docker build -t auth_app .",
-    "docker:run": "docker run -p 3000:3000 auth_app"
+    "docker:build": "docker build -f Dockerfile.prod -t auth_app:prod .",
+    "docker:run": "docker run -p 3000:3000 auth_app:prod"
   },
   "dependencies": {
     "@types/react-router-dom": "^5.3.3",
     "axios": "^0.24.0",
+    "express": "^4.18.2",
     "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -24,6 +29,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+    "@types/express": "^4.17.17",
     "@types/node": "^22.5.4",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
@@ -34,8 +40,8 @@
     "globals": "^15.9.0",
     "jest": "^29.0.0",
     "prettier": "^2.8.0",
-    "typescript": "^4.9.3",
-    "typescript-eslint": "^8.0.1",
+    "tsx": "^4.19.1",
+    "typescript": "^4.9.5",
     "vite": "^4.2.0"
   }
 }

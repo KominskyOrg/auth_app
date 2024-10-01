@@ -1,0 +1,54 @@
+# Stage 1: Build
+FROM node:20-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Install curl in the builder stage
+RUN apk --no-cache add curl
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install all dependencies, including devDependencies
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the frontend assets and compile TypeScript server
+RUN npm run build:staging
+
+# Stage 2: Staging (Production)
+FROM node:20-alpine AS staging
+
+# Set working directory
+WORKDIR /app
+
+# Install curl in the staging stage
+RUN apk --no-cache add curl
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm install --only=production
+
+# Copy built frontend assets and compiled server from the builder stage
+COPY --from=builder /app/dist ./dist
+
+# Set environment variables for production
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Expose the application port
+EXPOSE 3000
+
+# Create a non-root user for security
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Change to the non-root user
+USER appuser
+
+# Start the Express server
+CMD ["node", "dist/server.js"]
