@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const AUTH_API_URL = window.__ENV__?.AUTH_API_URL || "http://auth_api:5000";
+const AUTH_API_URL = import.meta.env.AUTH_API_URL;
 
 const api = axios.create({
   baseURL: AUTH_API_URL,

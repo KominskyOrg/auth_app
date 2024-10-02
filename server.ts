@@ -17,14 +17,6 @@ app.get('/health', (req, res) => {
 // Serve static files from the 'dist' directory
 app.use(express.static(path.join(__dirname, '../dist')));
 
-// Serve env.js file
-app.get('/env.js', (req, res) => {
-  res.setHeader('Content-Type', 'application/javascript');
-  res.send(`window.__ENV__ = {
-    AUTH_API_URL: '${process.env.AUTH_API_URL || 'http://auth_api:5000'}'
-  };`);
-});
-
 // Catch-all route to serve index.html for client-side routing
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist', 'index.html'));
