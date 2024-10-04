@@ -39,14 +39,6 @@ export default ({ mode }) => {
         __STAGING__: mode === "staging",
         __PRODUCTION__: mode === "production",
       },
-      __SERVER_HOST__: {},
-      __BASE__: {},
-      __HMR_PROTOCOL__: {},
-      __HMR_PORT__: {},
-      __HMR_HOSTNAME__: {},
-      __HMR_BASE__: {},
-      __HMR_DIRECT_TARGET__: {},
-      __HMR_ENABLE_OVERLAY__: {}
     },
   });
 };
