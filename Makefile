@@ -30,7 +30,7 @@ install:
 dev:
 	npm run dev
 
-build:
+build-dev:
 	npm run build
 
 lint:
@@ -54,7 +54,7 @@ up:
 down:
 	docker-compose -f ../devops_admin/docker-compose.yml down
 
-build:
+build-docker:
 	docker-compose -f ../devops_admin/docker-compose.yml build
 
 auth_api:
@@ -73,7 +73,7 @@ reinstall: clean install
 
 # Variables
 ENV ?= staging
-BACKEND_DIR ?= tf
+BACKEND_DIR ?= ./tf
 AWS_REGION ?= us-east-1
 IMAGE_TAG ?= $(shell git rev-parse --short HEAD)
 AWS_ACCOUNT_ID ?= $(AWS_ACCOUNT_ID)
