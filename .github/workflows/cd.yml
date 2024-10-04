@@ -17,27 +17,26 @@ jobs:
     env:
       AWS_REGION: "us-east-1"
       REPO_NAME: ${{ github.event.repository.name }}
-      IMAGE_TAG: ${{ github.sha }}
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Step 2: Set Environment and ECR Repository Name Based on Branch
       - name: Set Environment and ECR Repository
         id: set_env_ecr
         run: |
           if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
             echo "ENV=prod" >> $GITHUB_ENV
             echo "ECR_REPOSITORY=${REPO_NAME}_prod" >> $GITHUB_ENV
-          elif [[ "${GITHUB_REF}" == "refs/heads/staging" ]]; then
+          else
             echo "ENV=staging" >> $GITHUB_ENV
             echo "ECR_REPOSITORY=${REPO_NAME}_staging" >> $GITHUB_ENV
-          else
-            echo "ENV=dev" >> $GITHUB_ENV
-            echo "ECR_REPOSITORY=${REPO_NAME}_dev" >> $GITHUB_ENV
           fi
+
+      - name: Set IMAGE_TAG
+        run: |
+          SHORT_SHA=${GITHUB_SHA:0:7}
+          echo "IMAGE_TAG=${SHORT_SHA}" >> $GITHUB_ENV
 
       # Step 3: Configure AWS Credentials
       - name: Configure AWS Credentials
@@ -55,7 +54,7 @@ jobs:
       # Step 5: Build Docker Image
       - name: Build Docker Image
         run: |
-          docker build -t ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} Dockerfile.${{ env.ENV }} .
+          docker build -t ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} Dockerfile.${{ env.ENV }}
         env:
           ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ env.IMAGE_TAG }}
