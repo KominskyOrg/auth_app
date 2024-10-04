@@ -26,9 +26,11 @@ jobs:
         id: set_ecr_repo
         run: |
           if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            echo "ECR_REPOSITORY=${REPO_NAME}_prod" >> $GITHUB_ENV
+            echo "ENV=prod" >> $GITHUB_ENV
+            echo "ECR_REPOSITORY=${REPO_NAME}_${ENV}" >> $GITHUB_ENV
           else
-            echo "ECR_REPOSITORY=${REPO_NAME}_staging" >> $GITHUB_ENV
+            echo "ENV=staging" >> $GITHUB_ENV
+            echo "ECR_REPOSITORY=${REPO_NAME}_${ENV}" >> $GITHUB_ENV
           fi
 
       - name: Configure AWS Credentials
@@ -52,7 +54,7 @@ jobs:
           echo "ECR Repository: $ECR_REPOSITORY"
           echo "Image Tag: $IMAGE_TAG"
 
-          docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile.${{ env.ENV }} .
 
           docker tag $ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
