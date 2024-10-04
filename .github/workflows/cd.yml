@@ -84,7 +84,7 @@ jobs:
 
       # Step 9: Terraform Init
       - name: Terraform Init
-        run: terraform -chdir=${{ env.TF_DIR }} init -var env=${{ env.ENV }}
+        run: ls -al && terraform -chdir=${{ env.TF_DIR }} init -var env=${{ env.ENV }}
         working-directory: ./tf
 
       # Step 10: Terraform Plan
