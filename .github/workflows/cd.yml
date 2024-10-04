@@ -83,7 +83,7 @@ jobs:
 
       # Step 9: Terraform Init
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -var env=${{ env.ENV }}
         working-directory: ./tf
 
       # Step 10: Terraform Plan
