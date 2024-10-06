@@ -21,4 +21,5 @@ module "eks" {
   eks_service_name = "${local.stack_name}-${local.microservice_type}"
   env              = local.env
   ecr_url          = aws_ecr_repository.app_ecr.repository_url
+  image_tag        = var.image_tag
 }
