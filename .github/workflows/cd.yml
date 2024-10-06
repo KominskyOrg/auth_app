@@ -49,6 +49,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name kom-${{env.ENV}}-eks-cluster --region ${{ env.AWS_REGION }}
+
+
       # Step 4: Log in to Amazon ECR
       - name: Log in to Amazon ECR
         id: ecr-login
