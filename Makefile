@@ -73,7 +73,7 @@ reinstall: clean install
 
 # Variables
 ENV ?= staging
-BACKEND_DIR ?= ./tf-  
+BACKEND_DIR ?= ./tf
 AWS_REGION ?= us-east-1
 IMAGE_TAG ?= $(shell git rev-parse --short HEAD)
 AWS_ACCOUNT_ID ?= $(AWS_ACCOUNT_ID)
@@ -85,7 +85,7 @@ ECR_REPO := $(REPO_NAME)_$(ENV)
 # Initialize Terraform
 init:
 	@echo "Initializing Terraform for $(ENV) environment..."
-	cd $(BACKEND_DIR) && terraform init -var env=$(ENV)
+	cd $(BACKEND_DIR) && terraform init -var env=$(ENV) -backend-config=backend-$(ENV).tfbackend
 
 # Generate Terraform Plan
 plan:
