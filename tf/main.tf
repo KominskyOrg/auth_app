@@ -1,11 +1,3 @@
-locals {
-  env = "staging"
-  tags = {
-    env     = local.env
-    service = "auth_app"
-  }
-}
-
 provider "aws" {
   region = "us-east-1"
 }
@@ -25,7 +17,8 @@ provider "kubernetes" {
 }
 
 module "eks" {
-  source           = "./eks"
-  env              = local.env
-  auth_app_ecr_url = aws_ecr_repository.auth_app.repository_url
+  source       = "git::https://github.com/KominskyOrg/kom_tf_modules.git//eks"
+  eks_service_name     = "${local.stack_name}-${local.microservice_type}"
+  env          = local.env
+  ecr_url      = aws_ecr_repository.app_ecr.repository_url
 }

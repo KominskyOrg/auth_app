@@ -1,10 +1,5 @@
 # Makefile for auth_app
 
-TF_DIR = tf
-BACKEND_DIR = $(TF_DIR)
-
-# Default environment
-ENV ?= staging
 
 # Default target
 .PHONY: help
@@ -35,7 +30,7 @@ install:
 dev:
 	npm run dev
 
-build:
+build-dev:
 	npm run build
 
 lint:
@@ -50,11 +45,7 @@ format:
 test:
 	npm run test
 
-# Clean up node_modules and dist
-clean:
-	rm -rf node_modules dist
-
-.PHONY: up down build auth_api auth_service auth_app init plan apply destroy
+.PHONY: up down build auth_api auth_service auth_app
 
 # Docker commands
 up:
@@ -63,7 +54,7 @@ up:
 down:
 	docker-compose -f ../devops_admin/docker-compose.yml down
 
-build:
+build-docker:
 	docker-compose -f ../devops_admin/docker-compose.yml build
 
 auth_api:
@@ -78,21 +69,42 @@ auth_app:
 # Reinstall dependencies
 reinstall: clean install
 
-# Terraform Targets
-.PHONY: init plan apply destroy
+# Makefile
 
+# Variables
+ENV ?= staging
+BACKEND_DIR ?= ./tf
+AWS_REGION ?= us-east-1
+IMAGE_TAG ?= $(shell git rev-parse --short HEAD)
+AWS_ACCOUNT_ID ?= $(AWS_ACCOUNT_ID)
+REPO_NAME ?= staging
+ECR_REPO := $(REPO_NAME)_$(ENV)
+
+.PHONY: init plan apply build push ecr-login
+
+# Initialize Terraform
 init:
 	@echo "Initializing Terraform for $(ENV) environment..."
-	cd $(BACKEND_DIR) && terraform init -backend-config=backend-$(ENV).tfbackend
+	cd $(BACKEND_DIR) && terraform init -var env=$(ENV) -backend-config=backend-$(ENV).tfbackend
 
+# Generate Terraform Plan
 plan:
-	@echo "Running Terraform plan for $(ENV) environment..."
-	cd $(BACKEND_DIR) && terraform plan -var env=$(ENV)
+	@echo "Generating Terraform plan for $(ENV) environment..."
+	cd $(BACKEND_DIR) && terraform plan -out=tfplan -var env=$(ENV) -var image_tag=$(IMAGE_TAG)
 
-apply:
-	@echo "Applying Terraform changes for $(ENV) environment..."
-	cd $(BACKEND_DIR) && terraform apply -var env=$(ENV)
+# Build Docker Image
+build:
+	@echo "Building Docker image $(ECR_REPO):$(IMAGE_TAG)..."
+	docker build -t $(ECR_REPO):$(IMAGE_TAG) .
 
-destroy:
-	@echo "Destroying Terraform-managed infrastructure for $(ENV) environment..."
-	cd $(BACKEND_DIR) && terraform destroy -var env=$(ENV)
+# Authenticate Docker to Amazon ECR
+ecr-login:
+	@echo "Logging into Amazon ECR..."
+	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
+
+# Push Docker Image to ECR
+push: ecr-login build
+	@echo "Tagging Docker image..."
+	docker tag $(ECR_REPO):$(IMAGE_TAG) $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$(ECR_REPO):$(IMAGE_TAG)
+	@echo "Pushing Docker image to ECR..."
+	docker push $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$(ECR_REPO):$(IMAGE_TAG)
