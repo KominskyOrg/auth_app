@@ -96,7 +96,7 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var "env=${{ env.ENV }}" -var "image_tag=${{ env.IMAGE_TAG }}"
         working-directory: ./${{ env.TF_DIR }}
-
+        
       # Step 11: Terraform Apply (only on push to main or staging)
       - name: Terraform Apply
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
