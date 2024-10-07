@@ -17,7 +17,7 @@ provider "kubernetes" {
 }
 
 module "eks" {
-  source           = "git::https://github.com/KominskyOrg/kom_tf_modules.git//eks"
+  source           = "git::https://github.com/KominskyOrg/kom_tf_modules.git//eks@v1.0"
   eks_service_name = "${local.stack_name}-${local.microservice_type}"
   env              = local.env
   ecr_url          = aws_ecr_repository.app_ecr.repository_url
