@@ -22,4 +22,3 @@ module "eks" {
   env              = local.env
   ecr_url          = aws_ecr_repository.app_ecr.repository_url
   image_tag        = var.image_tag
-}
