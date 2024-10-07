@@ -28,13 +28,11 @@ jobs:
         run: |
           if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
             echo "ENV=prod" >> $GITHUB_ENV
-            echo "ECR_REPOSITORY=${REPO_NAME}_prod" >> $GITHUB_ENV
-            echo "BACKEND_CONFIG=backend-prod.tfbackend" >> $GITHUB_ENV
           else
             echo "ENV=staging" >> $GITHUB_ENV
-            echo "ECR_REPOSITORY=${REPO_NAME}_staging" >> $GITHUB_ENV
-            echo "BACKEND_CONFIG=backend-staging.tfbackend" >> $GITHUB_ENV
           fi
+          echo "ECR_REPOSITORY=${REPO_NAME}_${{ env.ENV }} " >> $GITHUB_ENV
+          echo "BACKEND_CONFIG=backend-${{ env.ENV }}.tfbackend" >> $GITHUB_ENV
 
       - name: Set IMAGE_TAG
         run: |
@@ -92,15 +90,15 @@ jobs:
       # Step 9: Terraform Init
       - name: Terraform Init
         run: terraform init -var env=${{ env.ENV }} -backend-config=${{ env.BACKEND_CONFIG }}
-        working-directory: ./tf
+        working-directory: ./${{ env.TF_DIR }}
 
       # Step 10: Terraform Plan
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var "env=${{ env.ENV }}" -var "image_tag=${{ env.IMAGE_TAG }}"
-        working-directory: ./tf
+        working-directory: ./${{ env.TF_DIR }}
 
       # Step 11: Terraform Apply (only on push to main or staging)
       - name: Terraform Apply
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
         run: terraform apply -auto-approve tfplan
-        working-directory: ./tf
+        working-directory: ./${{ env.TF_DIR }}

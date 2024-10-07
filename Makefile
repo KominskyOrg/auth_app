@@ -77,7 +77,7 @@ BACKEND_DIR ?= ./tf
 AWS_REGION ?= us-east-1
 IMAGE_TAG ?= $(shell git rev-parse --short HEAD)
 AWS_ACCOUNT_ID ?= $(AWS_ACCOUNT_ID)
-REPO_NAME ?= staging
+REPO_NAME ?= auth_app
 ECR_REPO := $(REPO_NAME)_$(ENV)
 
 .PHONY: init plan apply build push ecr-login
@@ -95,7 +95,7 @@ plan:
 # Build Docker Image
 build:
 	@echo "Building Docker image $(ECR_REPO):$(IMAGE_TAG)..."
-	docker build -t $(ECR_REPO):$(IMAGE_TAG) .
+	docker build -t $(ECR_REPO):$(IMAGE_TAG) -f Dockerfile.$(ENV) .
 
 # Authenticate Docker to Amazon ECR
 ecr-login:
