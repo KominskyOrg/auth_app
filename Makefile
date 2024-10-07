@@ -80,7 +80,7 @@ AWS_ACCOUNT_ID ?= $(AWS_ACCOUNT_ID)
 REPO_NAME ?= auth_app
 ECR_REPO := $(REPO_NAME)_$(ENV)
 
-.PHONY: init plan apply build push ecr-login
+.PHONY: init plan build push ecr-login
 
 # Initialize Terraform
 init:
