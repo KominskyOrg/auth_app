@@ -1,10 +1,13 @@
 locals {
-  tags = {
-    env     = var.env
-    service = "${local.stack_name}_${local.microservice_type}"
-  }
-  env               = var.env
   stack_name        = "auth"
   microservice_type = "app"
+  node_selector     = "frontend"
+
+
+  tags = {
+    env     = var.env
+    service = local.service_name
+  }
+  env               = var.env
   service_name      = "${local.stack_name}_${local.microservice_type}"
 }
