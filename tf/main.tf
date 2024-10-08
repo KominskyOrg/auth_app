@@ -32,7 +32,6 @@ module "eks" {
   service_port        = 8080
   service_target_port = 3000
   env_vars = {
-    AUTH_API_URL = "http://auth-api.${var.env}.svc.cluster.local:8080/api/auth"
     NODE_ENV     = local.node_env
   }
   readiness_probe_path = "/health"
