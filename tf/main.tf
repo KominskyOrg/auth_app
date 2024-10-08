@@ -21,7 +21,7 @@ locals {
 }
 
 module "eks" {
-  source           = "git::https://github.com/KominskyOrg/kom_tf_modules.git//eks?ref=v1.2"
+  source           = "git::https://github.com/KominskyOrg/kom_tf_modules.git//eks?ref=v1.6"
   eks_service_name = "${local.stack_name}-${local.microservice_type}"
   env              = local.env
   ecr_url          = aws_ecr_repository.app_ecr.repository_url
@@ -32,7 +32,7 @@ module "eks" {
   service_port        = 8080
   service_target_port = 3000
   env_vars = {
-    AUTH_API_URL = "https://${var.env}.jaredkominsky.com/api/auth"
+    AUTH_API_URL = "https://${var.env}.jaredkominsky.com/api/${local.stack_name}"
     NODE_ENV     = local.node_env
   }
   readiness_probe_path = "/health"
