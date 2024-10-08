@@ -18,7 +18,7 @@ EXPOSE 3000
 
 # Set environment variables for development
 ENV NODE_ENV=development
-ENV AUTH_API_URL=http://auth_api:5000/api/auth
+ENV AUTH_API_URL=http://auth_api:5000
 
 # Start both Vite and Express servers concurrently
 CMD ["npm", "run", "dev"]

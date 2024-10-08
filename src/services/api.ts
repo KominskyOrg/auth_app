@@ -17,7 +17,7 @@ interface DeactivateResponse {
 }
 
 // Load environment variables safely with a fallback
-const AUTH_API_URL = import.meta.env.VITE_AUTH_API_URL || "http://localhost:5000/api/auth";
+const AUTH_API_URL = import.meta.env.VITE_AUTH_API_URL || "http://localhost:5000";
 
 // Create an Axios instance with default configurations
 const api: AxiosInstance = axios.create({
