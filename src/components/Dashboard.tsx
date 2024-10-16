@@ -6,7 +6,7 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/home");
+    navigate("/");
   };
 
   return (

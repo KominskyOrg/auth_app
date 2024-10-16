@@ -1,3 +1,5 @@
+// src/components/DeactivateAccountModal.tsx
+
 import React, { useState } from 'react';
 import { deactivate } from '../services/api';
 
@@ -6,13 +8,20 @@ interface DeactivateAccountModalProps {
   onClose: () => void;
 }
 
-const DeactivateAccountModal: React.FC<DeactivateAccountModalProps> = ({ isOpen, onClose }) => {
+const DeactivateAccountModal: React.FC<DeactivateAccountModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!username.trim() || !password.trim()) {
+      setMessage('Username and password are required.');
+      return;
+    }
     try {
       const response = await deactivate(username, password);
       if (response.status === 200) {
@@ -31,19 +40,38 @@ const DeactivateAccountModal: React.FC<DeactivateAccountModalProps> = ({ isOpen,
   }
 
   return (
-    <div className="modal">
+    <div
+      className="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="deactivate-account-title"
+    >
       <div className="modal-content">
-        <span className="close" onClick={onClose}>&times;</span>
-        <h2>Deactivate Account</h2>
+        <button className="close" onClick={onClose} aria-label="Close">
+          &times;
+        </button>
+        <h2 id="deactivate-account-title">Deactivate Account</h2>
         {message && <p>{message}</p>}
         <form onSubmit={handleSubmit}>
           <div>
-            <label>Username:</label>
-            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+            <label htmlFor="username-input">Username:</label>
+            <input
+              id="username-input"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </div>
           <div>
-            <label>Password:</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <label htmlFor="password-input">Password:</label>
+            <input
+              id="password-input"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
           <button type="submit">ARE YOU SURE</button>
         </form>

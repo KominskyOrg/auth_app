@@ -8,16 +8,16 @@ WORKDIR /app
 RUN apk --no-cache add curl
 
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package.json yarn.lock ./
 
 # Install all dependencies, including devDependencies
-RUN npm install
+RUN yarn install
 
 # Copy the rest of the application code
 COPY . .
 
 # Build the frontend assets and compile TypeScript server
-RUN npm run build:staging
+RUN yarn build:staging
 
 # Stage 2: Staging (Production)
 FROM node:20-alpine AS staging

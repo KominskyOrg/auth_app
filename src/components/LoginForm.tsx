@@ -12,6 +12,10 @@ const LoginForm: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const handleDashboardClick = () => {
+    navigate("/");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null); // Reset error before submitting
@@ -56,6 +60,7 @@ const LoginForm: React.FC = () => {
           placeholder="Enter your password"
         />
       </div>
+      <button onClick={handleDashboardClick}>Dashboard</button>
       <button type="submit" disabled={isLoading}>
         {isLoading ? "Logging in..." : "Login"}
       </button>

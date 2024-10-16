@@ -15,6 +15,10 @@ const RegisterForm: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const handleDashboardClick = () => {
+    navigate("/");
+  };
+
   const validateEmail = (email: string): boolean => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
@@ -141,6 +145,7 @@ const RegisterForm: React.FC = () => {
           placeholder="Choose a username"
         />
       </div>
+      <button onClick={handleDashboardClick}>Dashboard</button>
       <button type="submit" disabled={isLoading}>
         {isLoading ? "Registering..." : "Register"}
       </button>
