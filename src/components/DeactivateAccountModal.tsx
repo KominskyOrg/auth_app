@@ -14,16 +14,20 @@ const DeactivateAccountModal: React.FC<DeactivateAccountModalProps> = ({
 }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<string | null>(null); // Updated type to include null
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username.trim() || !password.trim()) {
+    setMessage(null); // Now accepts null
+
+    if (!username || !password) {
       setMessage('Username and password are required.');
       return;
     }
+
     try {
       const response = await deactivate(username, password);
+      // Assuming deactivate returns { status: number, message: string }
       if (response.status === 200) {
         setMessage('Account deactivated successfully.');
       } else {
@@ -51,7 +55,8 @@ const DeactivateAccountModal: React.FC<DeactivateAccountModalProps> = ({
           &times;
         </button>
         <h2 id="deactivate-account-title">Deactivate Account</h2>
-        {message && <p>{message}</p>}
+        {message && <p role="alert">{message}</p>}{' '}
+        {/* Added role="alert" for accessibility */}
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="username-input">Username:</label>

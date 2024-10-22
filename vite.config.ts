@@ -1,28 +1,29 @@
-import react from "@vitejs/plugin-react";
-import path from "path";
-import { defineConfig, loadEnv } from "vite";
+/// <reference types="vitest/config" />
+import react from '@vitejs/plugin-react';
+import path from 'path';
+import { defineConfig, loadEnv } from 'vite';
 
 // https://vitejs.dev/config/
 export default ({ mode }) => {
   // Load environment variables based on the current mode
-  const env = loadEnv(mode, process.cwd(), "");
+  const env = loadEnv(mode, process.cwd(), '');
 
   return defineConfig({
-    base: "/",
+    base: '/',
     plugins: [react()],
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "src"),
+        '@': path.resolve(__dirname, 'src'),
       },
     },
     server: {
-      host: "0.0.0.0",
+      host: '0.0.0.0',
       port: 3000,
       proxy:
-        mode === "development"
+        mode === 'development'
           ? {
-              "/api": {
-                target: env.AUTH_API_URL || "http://auth_api:5000",
+              '/api': {
+                target: env.AUTH_API_URL || 'http://auth_api:5000',
                 changeOrigin: true,
                 secure: false,
                 ws: true,
@@ -31,13 +32,13 @@ export default ({ mode }) => {
           : {},
     },
     build: {
-      outDir: "dist",
+      outDir: 'dist',
     },
     define: {
       __DEFINES__: {
-        __DEV__: mode === "development",
-        __STAGING__: mode === "staging",
-        __PRODUCTION__: mode === "production",
+        __DEV__: mode === 'development',
+        __STAGING__: mode === 'staging',
+        __PRODUCTION__: mode === 'production',
       },
     },
   });
